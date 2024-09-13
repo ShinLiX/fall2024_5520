@@ -1,5 +1,5 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function Header({ name, children }) {
   console.log(name)
@@ -8,7 +8,7 @@ export default function Header({ name, children }) {
       <Text>Welcome to {name}</Text>        
       {children}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({});
