@@ -32,6 +32,10 @@ export default function Input({ autoFocus}) {
     setMessage("");
   }
 
+  function handleConfirm() {
+    console.log(text);
+  }
+
   return (
     <View>
       <TextInput 
@@ -50,6 +54,9 @@ export default function Input({ autoFocus}) {
       {!isFocused && message.length > 0 && (
         <Text>{message}</Text>
       )}
+      <Button
+      title="Confirm"
+      onPress={handleConfirm(text)} />
     </View>
     );
 }
