@@ -18,7 +18,7 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style='auto' />
       <Header name={appName} />
-      <Input autoFocus={true} inputHandler={handleInputData} />
+      <Input style={styles.inputStyle} autoFocus={true} inputHandler={handleInputData} />
       {/* Display the received data */}
       {receivedData.length > 0 && (
         <Text>Received Data: {receivedData}</Text>
@@ -33,5 +33,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inputStyle: {
+    borderColor: 'blue',
+    borderWidth: 1,
+    padding: 10,
+    margin: 10,
   },
 });

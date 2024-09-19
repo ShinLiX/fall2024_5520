@@ -40,7 +40,7 @@ export default function Input({ autoFocus, inputHandler }) {
     inputHandler(text);
   }
 
-  function handleVisible() {
+  function handleVisible() { 
     setIsVisible(false);
   }
 
@@ -48,10 +48,10 @@ export default function Input({ autoFocus, inputHandler }) {
     <Modal visible={isVisible} animationType="slide">
 
       <View style={styles.container}>
-        <TextInput
+        <TextInput style={styles.TextInputColor}
           placeholder="Type something"
           keyboardType="default"
-          style={{ borderBottomColor: "purple", borderBottomWidth: 2 }}
+          
           value={text}
           onChangeText={updateText} // Pass updated text to the parent component
           ref={inputRef}
@@ -59,18 +59,20 @@ export default function Input({ autoFocus, inputHandler }) {
           onFocus={handleFocus}
         />
         {text.length > 0 && (
-          <Text>Character Count: {text.length}</Text>
+          <Text style={styles.textColor}>Character Count: {text.length}</Text>
         )}
         {!isFocused && message.length > 0 && (
           <Text>{message}</Text>
         )}
-        <Button onPress={handleConfirm} title="Confirm" />
-        <Button onPress={handleVisible} title="Close" />
+        <View className='buttonView' style={styles.buttonStyle}>
+          <Button onPress={handleConfirm} title="Confirm" />
+          <Button onPress={handleVisible} title="Close" />
+        </View>
       </View>
     </Modal>
 
 
-  );
+  );as
 }
 
 const styles = StyleSheet.create({
@@ -79,5 +81,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    borderColor: 'blue',
   },
+
+  textColor: {
+    color: 'blue',
+    fontWeight: 'bold',
+    borderWidth: 1,
+  },
+
+  TextInputColor: {
+    borderColor: 'blue',
+    borderBottomColor: 'yellow',
+    borderBottomWidth: 2,
+  },
+
+  buttonStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '50%',
+  }
 });
