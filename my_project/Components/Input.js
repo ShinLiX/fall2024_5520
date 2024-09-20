@@ -1,104 +1,97 @@
-import { StyleSheet, Text, TextInput, View, Button, Modal } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import { Image, Alert, Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 
-export default function Input({ autoFocus, inputHandler }) {
+export default function Input({ textInputFocus, inputHandler, modalVisible, onCancel }) {
   const [text, setText] = useState("");
-  const inputRef = useRef(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [autoFocus]);
+  const [blur, setBlur] = useState(false);
 
   function updateText(changedText) {
     setText(changedText);
-    // Call inputHandler every time the text changes to pass it back to the App
-    inputHandler(changedText);
   }
-
-  function handleBlur() {
-    setIsFocused(false);
-    if (text.length >= 3) {
-      setMessage("Thank you");
-    } else {
-      setMessage("Please type more than 3 characters");
-    }
-  }
-
-  function handleFocus() {
-    setIsFocused(true);
-    setMessage("");
-  }
-
   function handleConfirm() {
-    console.log(text);
-    // Call inputHandler when the confirm button is pressed
+    // call the callback fn received from App.js
+    // pass what user has typed
     inputHandler(text);
+    setText("");
   }
 
-  function handleVisible() { 
-    setIsVisible(false);
+  function handleCancel() {
+    Alert.alert("Are you sure you want to cancel?", "Your data will be lost", 
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            setText("");
+            onCancel();
+          },
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
   }
-
   return (
-    <Modal visible={isVisible} animationType="slide">
-
+    <Modal animationType="slide" visible={modalVisible}>
       <View style={styles.container}>
-        <TextInput style={styles.TextInputColor}
+        
+        <TextInput
+          autoFocus={textInputFocus}
           placeholder="Type something"
           keyboardType="default"
-          
+          style={styles.input}
           value={text}
-          onChangeText={updateText} // Pass updated text to the parent component
-          ref={inputRef}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
+          onChangeText={updateText}
+          onBlur={() => {
+            setBlur(true);
+          }}
+          onFocus={() => {
+            setBlur(false);
+          }}
         />
-        {text.length > 0 && (
-          <Text style={styles.textColor}>Character Count: {text.length}</Text>
+        {blur ? (
+          text.length >= 3 ? (
+            <Text>Thank you</Text>
+          ) : (
+            <Text>Please type more than 3 characters</Text>
+          )
+        ) : (
+          text && <Text>{text.length}</Text>
         )}
-        {!isFocused && message.length > 0 && (
-          <Text>{message}</Text>
-        )}
-        <View className='buttonView' style={styles.buttonStyle}>
-          <Button onPress={handleConfirm} title="Confirm" />
-          <Button onPress={handleVisible} title="Close" />
+        <View style={styles.buttonContainer}>
+          <Button title="Confirm" onPress={handleConfirm} />
+          <Button title="Cancel" onPress={handleCancel} />
         </View>
       </View>
     </Modal>
-
-
-  );as
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'blue',
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    
   },
-
-  textColor: {
-    color: 'blue',
-    fontWeight: 'bold',
-    borderWidth: 1,
+  input: {
+    borderColor: "purple",
+    borderWidth: 2,
+    padding: 5,
+    color: "blue",
+    margin: 15,
   },
-
-  TextInputColor: {
-    borderColor: 'blue',
-    borderBottomColor: 'yellow',
-    borderBottomWidth: 2,
+  buttonContainer: {
+    width: "30%",
+    marginVertical: 5,
+    justifyContent: "center",
   },
-
-  buttonStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '50%',
-  }
+  imgStyle: {
+    width: 100,
+    height: 100,
+  },
 });
