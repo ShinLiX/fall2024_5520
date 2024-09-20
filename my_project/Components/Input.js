@@ -61,7 +61,7 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
           text && <Text>{text.length}</Text>
         )}
         <View style={styles.buttonContainer}>
-          <Button title="Confirm" onPress={handleConfirm} />
+          <Button title="Confirm" onPress={handleConfirm} disabled={text.length < 3}/>
           <Button title="Cancel" onPress={handleCancel} />
         </View>
       </View>
