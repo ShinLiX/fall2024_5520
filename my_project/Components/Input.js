@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     width: "30%",
     marginVertical: 5,
     justifyContent: "center",
+    flexDirection: "row",
   },
   imgStyle: {
     width: 100,
