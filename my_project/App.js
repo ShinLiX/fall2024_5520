@@ -1,23 +1,36 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList } from "react-native";
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
+import GoalItem from "./Components/GoalItem";
 
 export default function App() {
   const [receivedData, setReceivedData] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const appName = "My app";
+  const [goals, setGoals] = useState([]);
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     console.log("App ", data);
+    let newGoalObj = { id: Math.random().toString(), text: data };
+    
+    //setGoals(newArray);
+    setGoals((prevGoals) => [...prevGoals, newGoalObj]);
     setReceivedData(data);
     setIsModalVisible(false);
   }
   function dismissModal() {
     setIsModalVisible(false);
   }
+
+  function goalDeleteHandler(goalID) {
+    setGoals((prevGoals) => {
+      return prevGoals.filter((goal) => goal.id !== goalID);
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -37,8 +50,14 @@ export default function App() {
         dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
+        <FlatList data={goals} renderItem={({item}) => {
+          console.log(receivedData) 
+          return (
+            <GoalItem goalItem={item} handleDelete={goalDeleteHandler}/>
+          )
+        }} />
         <View style={styles.borderText}>
-          <Text style={styles.text}>{receivedData}</Text>
+          {/* <Text style={styles.text}>{receivedData}</Text> */}
         </View>
       </View>
     </SafeAreaView>
@@ -55,7 +74,7 @@ const styles = StyleSheet.create({
   text: {
     color: "purple",
     //marginVertical: 5,
-    fontSize: 20,
+    fontSize: 100,
     padding: 5,
 
   },
@@ -67,5 +86,13 @@ const styles = StyleSheet.create({
     //roundedcorners: 5,
     //borderWidth: 1,
     backgroundColor: "#aaa",
+  },
+  contentContainer: {
+    //flex: 1,
+    backgroundColor: "#aaa",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 20,
+    marginVertical: 5,
   },
 });

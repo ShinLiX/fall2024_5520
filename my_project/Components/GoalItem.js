@@ -1,29 +1,20 @@
 import React, {useState} from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { View, Text, StyleSheet, FlatList, Button } from 'react-native'
 
-export default function GoalItem ({newGoal}) {
-  const [array, setArray] = useState([]);
-  setArray((prev) => [...prev, newGoal]);
-  console.log(array);
-
-  const renderItem = ({ item }) => (
-    <View>
-      <Text style={styles.text}>{item.text}</Text>
-    </View>
-  );
+export default function GoalItem ({goalItem, handleDelete}) {
 
   return (
-    <FlatList
-      data={array}
-      renderItem={renderItem}
-      //keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.scrollView}></FlatList>
+    <View style={styles.scrollView}>
+      <Text style={styles.text}>{goalItem.text}</Text>
+      <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/>
+    </View>
   );
 }
 const styles = StyleSheet.create({
     scrollView: {
       alignItems: "center",
       justifyContent: "center",  
+      flexDirection: "row",
     },
     text: {
       color: "purple",
