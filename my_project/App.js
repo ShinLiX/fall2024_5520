@@ -3,6 +3,7 @@ import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList } fr
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
+import GoalItem from "./Components/GoalItem";
 
 export default function App() {
   const [receivedData, setReceivedData] = useState("");
@@ -23,6 +24,13 @@ export default function App() {
   function dismissModal() {
     setIsModalVisible(false);
   }
+
+  function goalDeleteHandler(goalID) {
+    setGoals((prevGoals) => {
+      return prevGoals.filter((goal) => goal.id !== goalID);
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -45,9 +53,7 @@ export default function App() {
         <FlatList data={goals} renderItem={({item}) => {
           console.log(receivedData) 
           return (
-          <View key={item.id} style={styles.contentContainer}>
-            <Text style={styles.text}>{item.text}</Text>
-          </View>
+            <GoalItem goalItem={item} handleDelete={goalDeleteHandler}/>
           )
         }} />
         <View style={styles.borderText}>
@@ -83,9 +89,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     //flex: 1,
-    backgroundColor: "#fcf",
+    backgroundColor: "#aaa",
     alignItems: "center",
     justifyContent: "center",
     fontSize: 20,
+    marginVertical: 5,
   },
 });
