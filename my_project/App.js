@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
@@ -8,10 +8,15 @@ export default function App() {
   const [receivedData, setReceivedData] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const appName = "My app";
+  const [goals, setGoals] = useState([]);
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     console.log("App ", data);
+    let newGoalObj = { id: Math.random().toString(), text: data };
+    
+    //setGoals(newArray);
+    setGoals((prevGoals) => [...prevGoals, newGoalObj]);
     setReceivedData(data);
     setIsModalVisible(false);
   }
@@ -37,8 +42,15 @@ export default function App() {
         dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          {goals.map((goal) => (
+            <Text key={goal.id} style={styles.text}>
+              {goal.text}
+            </Text>
+          ))}
+        </ScrollView>
         <View style={styles.borderText}>
-          <Text style={styles.text}>{receivedData}</Text>
+          {/* <Text style={styles.text}>{receivedData}</Text> */}
         </View>
       </View>
     </SafeAreaView>
@@ -67,5 +79,11 @@ const styles = StyleSheet.create({
     //roundedcorners: 5,
     //borderWidth: 1,
     backgroundColor: "#aaa",
+  },
+  contentContainer: {
+    //flex: 1,
+    backgroundColor: "#fcf",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
