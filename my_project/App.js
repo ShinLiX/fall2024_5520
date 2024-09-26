@@ -1,43 +1,71 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text } from 'react-native';
-import Header from './Components/Header';
-import { useState } from 'react';
-import Input from './Components/Input';
+import { StatusBar } from "expo-status-bar";
+import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import Header from "./Components/Header";
+import { useState } from "react";
+import Input from "./Components/Input";
 
 export default function App() {
-  const [receivedData, setReceivedData] = useState(""); // Store the input data
+  const [receivedData, setReceivedData] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const appName = "My app";
-  
+  //update this fn to receive data
   function handleInputData(data) {
-    // Update receivedData with the text from Input component
-    console.log("app", data);
+    //log the data to console
+    console.log("App ", data);
     setReceivedData(data);
+    setIsModalVisible(false);
   }
-
+  function dismissModal() {
+    setIsModalVisible(false);
+  }
   return (
-    <View style={styles.container}>
-      <StatusBar style='auto' />
-      <Header name={appName} />
-      <Input style={styles.inputStyle} autoFocus={true} inputHandler={handleInputData} />
-      {/* Display the received data */}
-      {receivedData.length > 0 && (
-        <Text>Received Data: {receivedData}</Text>
-      )}
-    </View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+      <View style={styles.topView}>
+        <Header name={appName} />
+        <Button
+          title="Add a Goal"
+          onPress={() => {
+            setIsModalVisible(true);
+          }}
+        />
+      </View>
+      <Input
+        textInputFocus={true}
+        inputHandler={handleInputData}
+        modalVisible={isModalVisible}
+        dismissModal={dismissModal}
+      />
+      <View style={styles.bottomView}>
+        <View style={styles.borderText}>
+          <Text style={styles.text}>{receivedData}</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    // alignItems: "center",
+    justifyContent: "center",
   },
-  inputStyle: {
-    borderColor: 'blue',
-    borderWidth: 1,
-    padding: 10,
-    margin: 10,
+  text: {
+    color: "purple",
+    //marginVertical: 5,
+    fontSize: 20,
+    padding: 5,
+
+  },
+  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
+  bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center" },
+  borderText: {
+    marginVertical: 5,
+    borderRadius: 5,
+    //roundedcorners: 5,
+    //borderWidth: 1,
+    backgroundColor: "#aaa",
   },
 });

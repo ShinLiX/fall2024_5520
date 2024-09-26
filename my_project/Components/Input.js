@@ -1,104 +1,131 @@
-import { StyleSheet, Text, TextInput, View, Button, Modal } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import {
+  Button,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
 
-export default function Input({ autoFocus, inputHandler }) {
+export default function Input({
+  textInputFocus,
+  inputHandler,
+  modalVisible,
+  dismissModal,
+}) {
   const [text, setText] = useState("");
-  const inputRef = useRef(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [autoFocus]);
+  const [blur, setBlur] = useState(false);
+  const minimumChar = 3;
 
   function updateText(changedText) {
     setText(changedText);
-    // Call inputHandler every time the text changes to pass it back to the App
-    inputHandler(changedText);
   }
-
-  function handleBlur() {
-    setIsFocused(false);
-    if (text.length >= 3) {
-      setMessage("Thank you");
-    } else {
-      setMessage("Please type more than 3 characters");
-    }
-  }
-
-  function handleFocus() {
-    setIsFocused(true);
-    setMessage("");
-  }
-
   function handleConfirm() {
-    console.log(text);
-    // Call inputHandler when the confirm button is pressed
+    // call the callback fn received from App.js
+    // pass what user has typed
     inputHandler(text);
+    setText("");
   }
-
-  function handleVisible() { 
-    setIsVisible(false);
+  function handleCancel() {
+    // hide the modal
+    Alert.alert("Cancel", "Are you sure you want to cancel", [
+      { text: "cancel", style: "cancel" },
+      {
+        text: "ok",
+        onPress: () => {
+          setText("");
+          dismissModal();
+        },
+      },
+    ]);
   }
-
   return (
-    <Modal visible={isVisible} animationType="slide">
-
+    <Modal animationType="slide" visible={modalVisible} transparent={true}>
       <View style={styles.container}>
-        <TextInput style={styles.TextInputColor}
+        <View style={styles.modalContainer}>
+          <Image 
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
+            }}
+            style={styles.image}
+            alt="Image of a an arrow"
+          />
+          <Image
+            source={require("../assets/lab2pic.png")}
+            style={styles.image}
+            alt="Image of a an arrow"
+          />
+        
+
+        <TextInput
+          autoFocus={textInputFocus}
           placeholder="Type something"
           keyboardType="default"
-          
+          style={styles.input}
           value={text}
-          onChangeText={updateText} // Pass updated text to the parent component
-          ref={inputRef}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
+          onChangeText={updateText}
+          onBlur={() => {
+            setBlur(true);
+          }}
+          onFocus={() => {
+            setBlur(false);
+          }}
         />
-        {text.length > 0 && (
-          <Text style={styles.textColor}>Character Count: {text.length}</Text>
+        {blur ? (
+          text.length >= minimumChar ? (
+            <Text>Thank you</Text>
+          ) : (
+            <Text>Please type more than {minimumChar} characters</Text>
+          )
+        ) : (
+          text && <Text>{text.length}</Text>
         )}
-        {!isFocused && message.length > 0 && (
-          <Text>{message}</Text>
-        )}
-        <View className='buttonView' style={styles.buttonStyle}>
-          <Button onPress={handleConfirm} title="Confirm" />
-          <Button onPress={handleVisible} title="Close" />
+        <View style={styles.buttonsRow}>
+          <View style={styles.buttonContainer}>
+            <Button title="Cancel" onPress={handleCancel} />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              disabled={text.length < minimumChar}
+              title="Confirm"
+              onPress={handleConfirm}
+            />
+          </View>
+          </View>
         </View>
       </View>
     </Modal>
-
-
-  );as
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'blue',
+    //backgroundColor: "#fcf",
+    alignItems: "center",
+    justifyContent: "center",
   },
-
-  textColor: {
-    color: 'blue',
-    fontWeight: 'bold',
-    borderWidth: 1,
+  input: {
+    borderColor: "purple",
+    borderWidth: 2,
+    padding: 5,
+    color: "blue",
+    marginVertical: 5,
   },
-
-  TextInputColor: {
-    borderColor: 'blue',
-    borderBottomColor: 'yellow',
-    borderBottomWidth: 2,
+  buttonContainer: {
+    width: "30%",
+    margin: 10,
   },
+  buttonsRow: { flexDirection: "row" },
 
-  buttonStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '50%',
-  }
+  image: { width: 100, height: 100 },
+
+  modalContainer: {
+    backgroundColor: "#ccc",
+    modalRadius: 5,
+    alignItems: "center",
+  },
 });
