@@ -15,11 +15,9 @@ export default function App() {
     setReceivedData(data);
     setIsModalVisible(false);
   }
-
-  function handleCancel() {
+  function dismissModal() {
     setIsModalVisible(false);
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -36,10 +34,12 @@ export default function App() {
         textInputFocus={true}
         inputHandler={handleInputData}
         modalVisible={isModalVisible}
-        onCancel={handleCancel}
+        dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
-        <Text style={styles.text}>{receivedData}</Text>
+        <View style={styles.borderText}>
+          <Text style={styles.text}>{receivedData}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -54,8 +54,18 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "purple",
-    marginVertical: 5,
+    //marginVertical: 5,
+    fontSize: 20,
+    padding: 5,
+
   },
   topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
   bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center" },
+  borderText: {
+    marginVertical: 5,
+    borderRadius: 5,
+    //roundedcorners: 5,
+    //borderWidth: 1,
+    backgroundColor: "#aaa",
+  },
 });

@@ -1,9 +1,24 @@
-import { Image, Alert, Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  Alert,
+} from "react-native";
 import React, { useState } from "react";
 
-export default function Input({ textInputFocus, inputHandler, modalVisible, onCancel }) {
+export default function Input({
+  textInputFocus,
+  inputHandler,
+  modalVisible,
+  dismissModal,
+}) {
   const [text, setText] = useState("");
   const [blur, setBlur] = useState(false);
+  const minimumChar = 3;
 
   function updateText(changedText) {
     setText(changedText);
@@ -14,40 +29,37 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
     inputHandler(text);
     setText("");
   }
-
   function handleCancel() {
-    Alert.alert("Are you sure you want to cancel?", "Your data will be lost", 
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            setText("");
-            onCancel();
-          },
+    // hide the modal
+    Alert.alert("Cancel", "Are you sure you want to cancel", [
+      { text: "cancel", style: "cancel" },
+      {
+        text: "ok",
+        onPress: () => {
+          setText("");
+          dismissModal();
         },
-        {
-          text: "No",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
+      },
+    ]);
   }
   return (
-    <Modal animationType="slide" visible={modalVisible}>
+    <Modal animationType="slide" visible={modalVisible} transparent={true}>
       <View style={styles.container}>
-        <Image              
-            style={styles.imgStyle}
+        <View style={styles.modalContainer}>
+          <Image 
             source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png'
+              uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
             }}
-            alt="online image"
-        />
-        <Image
-          style={styles.imgStyle}
-          source={require('../assets/lab2pic.png')}
-          alt="local image"            
-        />
+            style={styles.image}
+            alt="Image of a an arrow"
+          />
+          <Image
+            source={require("../assets/lab2pic.png")}
+            style={styles.image}
+            alt="Image of a an arrow"
+          />
+        
+
         <TextInput
           autoFocus={textInputFocus}
           placeholder="Type something"
@@ -63,17 +75,26 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
           }}
         />
         {blur ? (
-          text.length >= 3 ? (
+          text.length >= minimumChar ? (
             <Text>Thank you</Text>
           ) : (
-            <Text>Please type more than 3 characters</Text>
+            <Text>Please type more than {minimumChar} characters</Text>
           )
         ) : (
           text && <Text>{text.length}</Text>
         )}
-        <View style={styles.buttonContainer}>
-          <Button title="Confirm" onPress={handleConfirm} disabled={text.length < 3}/>
-          <Button title="Cancel" onPress={handleCancel} />
+        <View style={styles.buttonsRow}>
+          <View style={styles.buttonContainer}>
+            <Button title="Cancel" onPress={handleCancel} />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              disabled={text.length < minimumChar}
+              title="Confirm"
+              onPress={handleConfirm}
+            />
+          </View>
+          </View>
         </View>
       </View>
     </Modal>
@@ -83,27 +104,28 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    //backgroundColor: "#fcf",
     alignItems: "center",
     justifyContent: "center",
-    padding: 10,
-    
   },
   input: {
     borderColor: "purple",
     borderWidth: 2,
     padding: 5,
     color: "blue",
-    margin: 15,
+    marginVertical: 5,
   },
   buttonContainer: {
     width: "30%",
-    marginVertical: 5,
-    justifyContent: "center",
-    flexDirection: "row",
+    margin: 10,
   },
-  imgStyle: {
-    width: 100,
-    height: 100,
+  buttonsRow: { flexDirection: "row" },
+
+  image: { width: 100, height: 100 },
+
+  modalContainer: {
+    backgroundColor: "#ccc",
+    modalRadius: 5,
+    alignItems: "center",
   },
 });
