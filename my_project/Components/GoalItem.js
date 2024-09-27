@@ -12,16 +12,16 @@ export default function GoalItem ({goalItem, handleDelete}) {
 }
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#aaa",
     borderRadius: 5,
-    marginTop: 5,
+    marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
   },
   text: {
     color: "purple",
-    marginVertical: 5,
-    fontSize: 35,
+    //marginVertical: 5,
+    fontSize: 20,
     padding: 5,
   },
 });

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList } from "react-native";
+import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList, Alert } from "react-native";
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
@@ -31,6 +31,13 @@ export default function App() {
     });
   }
 
+  // function deleteAllGoals() {
+  //   Alert.alert("Delete All Goals?","Are you sure?", [
+  //     {text: "Yes", onPress: () => setGoals([])},
+  //     {text: "No", onPress: () => console.log("deletion cancelled.")}
+  //   ]);
+  // }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -50,7 +57,12 @@ export default function App() {
         dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
-        <FlatList data={goals} renderItem={({item}) => {
+        <FlatList data={goals} ListEmptyComponent={() => <Text style={styles.text}>No goals to show</Text>}
+        //ListHeaderComponent={() => goals.length > 0 && <Text style={styles.text}>My Goals</Text>}
+        //ListFooterComponent={() => <Button title="Delete all" onPress={deleteAllGoals}/>}
+        //ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: "grey"}}/>}
+        contentContainerStyle={styles.contentContainer}
+        renderItem={({item}) => {  
           console.log(receivedData) 
           return (
             <GoalItem goalItem={item} handleDelete={goalDeleteHandler}/>
@@ -74,12 +86,14 @@ const styles = StyleSheet.create({
   text: {
     color: "purple",
     //marginVertical: 5,
-    fontSize: 100,
+    fontSize: 20,
     padding: 5,
+    alignItems: "center",
+    //justifyContent: "center",
 
   },
-  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
-  bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center" },
+  topView: { flex: 1, alignItems: "center", justifyContent: "center" },
+  bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center", justifyContent: "center" },
   borderText: {
     marginVertical: 5,
     borderRadius: 5,
@@ -89,10 +103,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     //flex: 1,
-    backgroundColor: "#aaa",
+    //backgroundColor: "#aaa",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 20,
+    //fontSize: 20,
     marginVertical: 5,
   },
 });
