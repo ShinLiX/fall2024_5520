@@ -60,7 +60,7 @@ export default function App() {
         <FlatList data={goals} ListEmptyComponent={() => <Text style={styles.text}>No goals to show</Text>}
         ListHeaderComponent={() => goals.length > 0 && <Text style={styles.text}>My Goals</Text>}
         ListFooterComponent={() => <Button title="Delete all" onPress={deleteAllGoals}/>}
-        //ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: "grey"}}/>}
+        ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: "grey"}}/>}
         contentContainerStyle={styles.contentContainer}
         renderItem={({item}) => {  
           console.log(receivedData) 
