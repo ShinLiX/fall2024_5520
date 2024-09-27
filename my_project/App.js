@@ -31,12 +31,12 @@ export default function App() {
     });
   }
 
-  // function deleteAllGoals() {
-  //   Alert.alert("Delete All Goals?","Are you sure?", [
-  //     {text: "Yes", onPress: () => setGoals([])},
-  //     {text: "No", onPress: () => console.log("deletion cancelled.")}
-  //   ]);
-  // }
+  function deleteAllGoals() {
+    Alert.alert("Delete All Goals?","Are you sure?", [
+      {text: "Yes", onPress: () => setGoals([])},
+      {text: "No", onPress: () => console.log("deletion cancelled.")}
+    ]);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +59,7 @@ export default function App() {
       <View style={styles.bottomView}>
         <FlatList data={goals} ListEmptyComponent={() => <Text style={styles.text}>No goals to show</Text>}
         ListHeaderComponent={() => goals.length > 0 && <Text style={styles.text}>My Goals</Text>}
-        //ListFooterComponent={() => <Button title="Delete all" onPress={deleteAllGoals}/>}
+        ListFooterComponent={() => <Button title="Delete all" onPress={deleteAllGoals}/>}
         //ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: "grey"}}/>}
         contentContainerStyle={styles.contentContainer}
         renderItem={({item}) => {  
