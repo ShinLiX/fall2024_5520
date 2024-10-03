@@ -11,14 +11,17 @@ export default function GoalItem ({goalItem, handleDelete}) {
   );
 }
 const styles = StyleSheet.create({
-    scrollView: {
-      alignItems: "center",
-      justifyContent: "center",  
-      flexDirection: "row",
-    },
-    text: {
-      color: "purple",
-      marginVertical: 5,
-      fontSize: 20,
-    },
+  scrollView: {
+    backgroundColor: "#aaa",
+    borderRadius: 5,
+    marginVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  text: {
+    color: "purple",
+    //marginVertical: 5,
+    fontSize: 20,
+    padding: 5,
+  },
 });
