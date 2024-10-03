@@ -7,7 +7,7 @@ export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
     <View style={styles.scrollView}>
       <Text style={styles.text}>{goalItem.text}</Text>
       <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/>
-      <Button title="i" onPress={()=>{detailHandler()}} color="grey"/>
+      <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/>
     </View>
   );
 }

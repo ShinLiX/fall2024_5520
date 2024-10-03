@@ -13,9 +13,10 @@ export default function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={Home} 
         options={{title: 'My Home Page',
-         headerStyle: {backgroundColor: 'purple'},
-         headerTintColor: 'gray'}}/>
-        <Stack.Screen name="Details" component={GoalDetails} />
+         headerStyle: {backgroundColor: 'grey'},
+         headerTintColor: 'yellow'}}/>
+        <Stack.Screen name="Details" component={GoalDetails} 
+        options={({route}) => ({title: route.params? route.params.goal.text: "More Details"})}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

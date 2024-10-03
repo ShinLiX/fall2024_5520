@@ -6,7 +6,7 @@ import Input from "./Input";
 import GoalItem from "./GoalItem";
 
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
   const [receivedData, setReceivedData] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const appName = "My app";
@@ -38,8 +38,9 @@ export default function Home({ navigation }) {
       {text: "No", onPress: () => console.log("deletion cancelled.")}
     ]);
   }
-  function showDetails() {
-    navigation.navigate("Details");
+  function showDetails(goal) {
+    navigation.navigate("Details", {goal});
+    console.log("Goal details: ", goal);
   }
 
   
