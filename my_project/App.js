@@ -4,6 +4,8 @@ import Home from "./Components/Home";
 import GoalDetails from "./Components/GoalDetails";
 
 const Stack = createNativeStackNavigator();
+console.log( {Stack} );
+
 export default function App() {
   
   return (
