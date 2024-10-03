@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import { View, Text, StyleSheet, FlatList, Button } from 'react-native'
 
-export default function GoalItem ({goalItem, handleDelete}) {
+export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
 
   return (
     <View style={styles.scrollView}>
       <Text style={styles.text}>{goalItem.text}</Text>
       <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/>
+      <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/>
     </View>
   );
 }
