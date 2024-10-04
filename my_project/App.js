@@ -12,7 +12,10 @@ export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator 
+      initialRouteName="Home"
+      screenOptions={{headerStyle: {backgroundColor: 'pink'}, headerTintColor: 'black'}}
+      >
         <Stack.Screen name="Home" component={Home} 
         options={{title: 'My Home Page',
          headerStyle: {backgroundColor: 'grey'},
@@ -20,10 +23,7 @@ export default function App() {
         <Stack.Screen name="Details" component={GoalDetails} 
         options={({route}) => { 
           return {
-            title: route.params? route.params.goal.text: "More Details",
-            headerRight: () => (
-              <Button title="Warning" onPress={()=> console.log("Warning pressed")} />
-            )
+            title: route.params? route.params.goal.text: "More Details"
           }}
         }/>
       </Stack.Navigator>
