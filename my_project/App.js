@@ -12,7 +12,10 @@ export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator 
+      initialRouteName="Home"
+      screenOptions={{headerStyle: {backgroundColor: 'pink'}, headerTintColor: 'black'}}
+      >
         <Stack.Screen name="Home" component={Home} 
         options={{title: 'My Home Page',
          headerStyle: {backgroundColor: 'grey'},

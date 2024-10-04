@@ -38,10 +38,6 @@ export default function Home({ navigation, route }) {
       {text: "No", onPress: () => console.log("deletion cancelled.")}
     ]);
   }
-  function showDetails(goal) {
-    navigation.navigate("Details", {goal});
-    console.log("Goal details: ", goal);
-  }
 
   
 
@@ -72,7 +68,7 @@ export default function Home({ navigation, route }) {
         renderItem={({item}) => {  
           console.log(receivedData) 
           return (
-            <GoalItem goalItem={item} handleDelete={goalDeleteHandler} detailHandler={showDetails}/>
+            <GoalItem goalItem={item} handleDelete={goalDeleteHandler}/>
           )
         }} />
         <View style={styles.borderText}>
