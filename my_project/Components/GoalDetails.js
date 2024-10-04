@@ -20,7 +20,7 @@ export default function GoalDetails ({ navigation, route }) {
   return (
       <View>
         {route.params? (
-            <Text textColor={textColor}>GoalDetails {"\n"}Details: {route.params.goal.text}</Text>
+            <Text>GoalDetails {"\n"}Details: {route.params.goal.text}</Text>
         ):(<Text>More Details</Text>)}
         <Button title="More Details" onPress={()=> navigation.push("Details")} />
         
