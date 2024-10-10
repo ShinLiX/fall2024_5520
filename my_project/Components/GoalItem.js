@@ -5,7 +5,17 @@ export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
 
   return (
     <View style={styles.scrollView}>
-      <Pressable style={styles.horizontalContainer} onPress={()=>{detailHandler(goalItem)}}>
+      <Pressable style={({pressed}) => {
+        console.log({pressed}); 
+        return [pressed? styles.pressedView : styles.horizontalContainer];
+      }} 
+      android_ripple={{
+        color: 'grey', 
+        borderless: false
+      }} 
+      onPress={()=>{
+        detailHandler(goalItem)
+      }}>
       <Text style={styles.text}>{goalItem.text}</Text>
       <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/>
       {/* <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/> */}
@@ -30,5 +40,11 @@ const styles = StyleSheet.create({
   horizontalContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  pressedView: {
+    backgroundColor: "grey",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 5,
   },
 });
