@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { View, Text, StyleSheet, FlatList, Button, Pressable } from 'react-native'
 import PressableButton from './PressableButton';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
 
@@ -21,7 +22,7 @@ export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
       <PressableButton
         pressedFunction={()=> {handleDelete(goalItem.id)}} componentStyle={styles.deleteBackground} pressedStyle={styles.pressedView}>
         
-        <Text style={styles.deleteButton}>X</Text> 
+        <Text style={styles.deleteButton}><MaterialCommunityIcons name="delete-outline" size={24} color="black" /></Text> 
       </PressableButton>
       {/* <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/> */}
       {/* <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/> */}
@@ -52,12 +53,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 5,
+    opacity: 0.7,
   },
   deleteButton: {
     color: "white",
   },
   deleteBackground: {
-    backgroundColor: "red",
+    backgroundColor: "#aaa",
   },
 
 });
