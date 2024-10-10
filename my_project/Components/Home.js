@@ -4,6 +4,7 @@ import Header from "./Header";
 import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
+import PressableButton from "./PressableButton";
 
 
 export default function Home({ navigation, route }) {
@@ -50,12 +51,15 @@ export default function Home({ navigation, route }) {
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
-        <Button
+        {/* <Button
           title="Add a Goal"
           onPress={() => {
             setIsModalVisible(true);
           }}
-        />
+        /> */}
+      <PressableButton pressedFunction={() => {setIsModalVisible(true)}}>
+        <Text style={styles.text}>Add a Goal</Text>
+      </PressableButton>
       </View>
       <Input
         textInputFocus={true}

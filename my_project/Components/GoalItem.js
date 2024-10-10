@@ -1,13 +1,32 @@
 import React, {useState} from 'react'
-import { View, Text, StyleSheet, FlatList, Button } from 'react-native'
+import { View, Text, StyleSheet, FlatList, Button, Pressable } from 'react-native'
+import PressableButton from './PressableButton';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
 
   return (
     <View style={styles.scrollView}>
+      <Pressable style={({pressed}) => {
+        console.log({pressed}); 
+        return [pressed? styles.pressedView : styles.horizontalContainer];
+      }} 
+      android_ripple={{
+        color: 'grey', 
+        borderless: false
+      }} 
+      onPress={()=>{
+        detailHandler(goalItem)
+      }}>
       <Text style={styles.text}>{goalItem.text}</Text>
-      <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/>
-      <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/>
+      <PressableButton
+        pressedFunction={()=> {handleDelete(goalItem.id)}} componentStyle={styles.deleteBackground} pressedStyle={styles.pressedView}>
+        
+        <Text style={styles.deleteButton}><MaterialCommunityIcons name="delete-outline" size={24} color="black" /></Text> 
+      </PressableButton>
+      {/* <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/> */}
+      {/* <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/> */}
+      </Pressable>
     </View>
   );
 }
@@ -25,4 +44,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 5,
   },
+  horizontalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  pressedView: {
+    backgroundColor: "grey",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 5,
+    opacity: 0.7,
+  },
+  deleteButton: {
+    color: "white",
+  },
+  deleteBackground: {
+    backgroundColor: "#aaa",
+  },
+
 });
