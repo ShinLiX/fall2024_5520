@@ -3,12 +3,14 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import PressableButton from "./PressableButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-export default function GoalItem({ goalObj, handleDelete }) {
+export default function GoalItem({ goalObj, handleDelete, onPressIn, onPressOut }) {
   const navigation = useNavigation();
 
   return (
     <View style={styles.textContainer}>
       <Pressable
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
         onLongPress={() => {
           Alert.alert("Delete", "Are you sure you want to delete?", [
             {

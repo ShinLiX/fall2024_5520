@@ -100,23 +100,24 @@ export default function Home({ navigation }) {
           ListFooterComponent={
             goals.length && <Button title="Delete all" onPress={deleteAll} />
           }
-          ItemSeparatorComponent={({highlighted})=> {
+          ItemSeparatorComponent={({highlighted})=> (
+            
             <View
               style={[
-                styles.seperator,
-                highlighted? styles.highlightedSeperator : null,
+                highlighted? styles.highlightedSeperator : styles.seperator,
               ]}
-            />
-          }}
+            />)
+          }
+          
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
-          renderItem={({ item }) => {
+          renderItem={({ item, separators }) => {
             return (
               <GoalItem
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
-                onPressin={() => separators.highlight()}
-                onPressout={() => separators.unhighlight()}
+                onPressIn={() => separators.highlight()}
+                onPressOut={() => separators.unhighlight()}
                 />
             )}}
                 // handlePress={goalPressHandler}
@@ -161,11 +162,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   seperator: {
-    height: 5,
+    height: 3,
     backgroundColor: "gray",
   },
   highlightedSeperator: {
-    height: 5,
-    backgroundColor: "red",
+    height: 3,
+    backgroundColor: "purple",
   },
 });
