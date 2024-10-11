@@ -1,65 +1,87 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList, Alert } from "react-native";
+import {
+  Alert,
+  Button,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Header from "./Header";
 import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 
-
-export default function Home({ navigation, route }) {
-  const [receivedData, setReceivedData] = useState("");
+export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const appName = "My app";
   const [goals, setGoals] = useState([]);
+  const appName = "My app";
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     console.log("App ", data);
-    let newGoalObj = { id: Math.random().toString(), text: data };
-    
-    //setGoals(newArray);
-    setGoals((prevGoals) => [...prevGoals, newGoalObj]);
-    setReceivedData(data);
+    // declare a JS object
+    let newGoal = { text: data, id: Math.random() };
+    // update the goals array to have newGoal as an item
+    //async
+    setGoals((prevGoals) => {
+      return [...prevGoals, newGoal];
+    });
+    //updated goals is not accessible here
     setIsModalVisible(false);
   }
   function dismissModal() {
     setIsModalVisible(false);
   }
 
-  function goalDeleteHandler(goalID) {
+  // function goalPressHandler(pressedGoal) {
+  //   //which goal?
+  //   console.log("goal pressed");
+  //   navigation.navigate("Details", { goalObj: pressedGoal });
+  // }
+  function goalDeleteHandler(deletedId) {
+    console.log("goal deleted ", deletedId);
+    //Use array.filter to update the array by removing the deletedId
+
     setGoals((prevGoals) => {
-      return prevGoals.filter((goal) => goal.id !== goalID);
+      return prevGoals.filter((goal) => {
+        return goal.id != deletedId;
+      });
     });
   }
-
-  function deleteAllGoals() {
-    Alert.alert("Delete All Goals?","Are you sure?", [
-      {text: "Yes", onPress: () => setGoals([])},
-      {text: "No", onPress: () => console.log("deletion cancelled.")}
+  function deleteAll() {
+    Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
+      {
+        text: "Yes",
+        onPress: () => {
+          setGoals([]);
+        },
+      },
+      { text: "No", style: "cancel" },
     ]);
   }
-  function showDetails(goal) {
-    navigation.navigate("Details", {goal});
-    console.log("Goal details: ", goal);
-  }
-
-  
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
+        <PressableButton
+          pressedFunction={() => {
+            setIsModalVisible(true);
+          }}
+          componentStyle={{ backgroundColor: "purple" }}
+        >
+          <Text style={styles.buttonText}>Add a Goal</Text>
+        </PressableButton>
         {/* <Button
           title="Add a Goal"
           onPress={() => {
             setIsModalVisible(true);
           }}
         /> */}
-      <PressableButton pressedFunction={() => {setIsModalVisible(true)}}>
-        <Text style={styles.text}>Add a Goal</Text>
-      </PressableButton>
       </View>
       <Input
         textInputFocus={true}
@@ -68,20 +90,47 @@ export default function Home({ navigation, route }) {
         dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
-        <FlatList data={goals} ListEmptyComponent={() => <Text style={styles.text}>No goals to show</Text>}
-        ListHeaderComponent={() => goals.length > 0 && <Text style={styles.text}>My Goals</Text>}
-        ListFooterComponent={() => <Button title="Delete all" onPress={deleteAllGoals}/>}
-        ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: "grey"}}/>}
-        contentContainerStyle={styles.contentContainer}
-        renderItem={({item}) => {  
-          console.log(receivedData) 
-          return (
-            <GoalItem goalItem={item} handleDelete={goalDeleteHandler} detailHandler={showDetails}/>
-          )
-        }} />
-        <View style={styles.borderText}>
-          {/* <Text style={styles.text}>{receivedData}</Text> */}
-        </View>
+        <FlatList
+          ListEmptyComponent={
+            <Text style={styles.header}>No goals to show</Text>
+          }
+          ListHeaderComponent={
+            goals.length && <Text style={styles.header}>My Goals List</Text>
+          }
+          ListFooterComponent={
+            goals.length && <Button title="Delete all" onPress={deleteAll} />
+          }
+          ItemSeparatorComponent={({highlighted})=> {
+            <View
+              style={[
+                styles.seperator,
+                highlighted? styles.highlightedSeperator : null,
+              ]}
+            />
+          }}
+          contentContainerStyle={styles.scrollViewContent}
+          data={goals}
+          renderItem={({ item }) => {
+            return (
+              <GoalItem
+                goalObj={item}
+                handleDelete={goalDeleteHandler}
+                onPressin={() => separators.highlight()}
+                onPressout={() => separators.unhighlight()}
+                />
+            )}}
+                // handlePress={goalPressHandler}
+            
+        />
+        {/* <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          {goals.map((goalObj) => {
+            return (
+              <View key={goalObj.id} style={styles.textContainer}>
+                <Text style={styles.text}>{goalObj.text}</Text>
+              </View>
+            );
+          })}
+        </ScrollView> */}
       </View>
     </SafeAreaView>
   );
@@ -94,30 +143,29 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     justifyContent: "center",
   },
-  text: {
-    color: "purple",
-    //marginVertical: 5,
+  header: {
+    color: "indigo",
+    fontSize: 25,
+    marginTop: 10,
+  },
+
+  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
+  bottomView: { flex: 4, backgroundColor: "#dcd" },
+
+  scrollViewContent: {
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
     fontSize: 20,
     padding: 5,
-    alignItems: "center",
-    //justifyContent: "center",
-
   },
-  topView: { flex: 1, alignItems: "center", justifyContent: "center" },
-  bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center", justifyContent: "center" },
-  borderText: {
-    marginVertical: 5,
-    borderRadius: 5,
-    //roundedcorners: 5,
-    //borderWidth: 1,
-    backgroundColor: "#aaa",
+  seperator: {
+    height: 5,
+    backgroundColor: "gray",
   },
-  contentContainer: {
-    //flex: 1,
-    //backgroundColor: "#aaa",
-    alignItems: "center",
-    justifyContent: "center",
-    //fontSize: 20,
-    marginVertical: 5,
+  highlightedSeperator: {
+    height: 5,
+    backgroundColor: "red",
   },
 });
