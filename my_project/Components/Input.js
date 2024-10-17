@@ -46,7 +46,7 @@ export default function Input({
     <Modal animationType="slide" visible={modalVisible} transparent={true}>
       <View style={styles.container}>
         <View style={styles.modalContainer}>
-          <Image 
+          <Image
             source={{
               uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
             }}
@@ -58,42 +58,41 @@ export default function Input({
             style={styles.image}
             alt="Image of a an arrow"
           />
-        
 
-        <TextInput
-          autoFocus={textInputFocus}
-          placeholder="Type something"
-          keyboardType="default"
-          style={styles.input}
-          value={text}
-          onChangeText={updateText}
-          onBlur={() => {
-            setBlur(true);
-          }}
-          onFocus={() => {
-            setBlur(false);
-          }}
-        />
-        {blur ? (
-          text.length >= minimumChar ? (
-            <Text>Thank you</Text>
+          <TextInput
+            autoFocus={textInputFocus}
+            placeholder="Type something"
+            keyboardType="default"
+            style={styles.input}
+            value={text}
+            onChangeText={updateText}
+            onBlur={() => {
+              setBlur(true);
+            }}
+            onFocus={() => {
+              setBlur(false);
+            }}
+          />
+          {blur ? (
+            text.length >= minimumChar ? (
+              <Text>Thank you</Text>
+            ) : (
+              <Text>Please type more than {minimumChar} characters</Text>
+            )
           ) : (
-            <Text>Please type more than {minimumChar} characters</Text>
-          )
-        ) : (
-          text && <Text>{text.length}</Text>
-        )}
-        <View style={styles.buttonsRow}>
-          <View style={styles.buttonContainer}>
-            <Button title="Cancel" onPress={handleCancel} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              disabled={text.length < minimumChar}
-              title="Confirm"
-              onPress={handleConfirm}
-            />
-          </View>
+            text && <Text>{text.length}</Text>
+          )}
+          <View style={styles.buttonsRow}>
+            <View style={styles.buttonContainer}>
+              <Button title="Cancel" onPress={handleCancel} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                disabled={text.length < minimumChar}
+                title="Confirm"
+                onPress={handleConfirm}
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -104,9 +103,14 @@ export default function Input({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#fcf",
+
     alignItems: "center",
     justifyContent: "center",
+  },
+  modalContainer: {
+    backgroundColor: "#aaa",
+    borderRadius: 5,
+    alignItems: "center",
   },
   input: {
     borderColor: "purple",
@@ -122,10 +126,4 @@ const styles = StyleSheet.create({
   buttonsRow: { flexDirection: "row" },
 
   image: { width: 100, height: 100 },
-
-  modalContainer: {
-    backgroundColor: "#ccc",
-    modalRadius: 5,
-    alignItems: "center",
-  },
 });

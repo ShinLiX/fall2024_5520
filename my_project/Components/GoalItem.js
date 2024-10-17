@@ -1,65 +1,93 @@
-import React, {useState} from 'react'
-import { View, Text, StyleSheet, FlatList, Button, Pressable } from 'react-native'
-import PressableButton from './PressableButton';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-export default function GoalItem ({goalItem, handleDelete, detailHandler}) {
+import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import PressableButton from "./PressableButton";
+import AntDesign from "@expo/vector-icons/AntDesign";
+export default function GoalItem({ goalObj, handleDelete, onPressIn, onPressOut }) {
+  const navigation = useNavigation();
 
   return (
-    <View style={styles.scrollView}>
-      <Pressable style={({pressed}) => {
-        console.log({pressed}); 
-        return [pressed? styles.pressedView : styles.horizontalContainer];
-      }} 
-      android_ripple={{
-        color: 'grey', 
-        borderless: false
-      }} 
-      onPress={()=>{
-        detailHandler(goalItem)
-      }}>
-      <Text style={styles.text}>{goalItem.text}</Text>
-      <PressableButton
-        pressedFunction={()=> {handleDelete(goalItem.id)}} componentStyle={styles.deleteBackground} pressedStyle={styles.pressedView}>
-        
-        <Text style={styles.deleteButton}><MaterialCommunityIcons name="delete-outline" size={24} color="black" /></Text> 
-      </PressableButton>
-      {/* <Button title="X" onPress={()=>{handleDelete(goalItem.id)}} color="grey"/> */}
-      {/* <Button title="i" onPress={()=>{detailHandler(goalItem)}} color="grey"/> */}
+    <View style={styles.textContainer}>
+      <Pressable
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        onLongPress={() => {
+          Alert.alert("Delete", "Are you sure you want to delete?", [
+            {
+              text: "Yes",
+              onPress: () => {
+                handleDelete(goalObj.id);
+              },
+            },
+            { text: "No", style: "cancel" },
+          ]);
+        }}
+        android_ripple={{ color: "white", radius: 20 }}
+        style={({ pressed }) => {
+          return [styles.horizontalContainer, pressed && styles.pressedStyle];
+        }}
+        onPress={() => {
+          // handlePress(goalObj);
+          navigation.navigate("Details", { goalObj });
+        }}
+      >
+        <Text style={styles.text}>{goalObj.text}</Text>
+        <PressableButton
+          pressedFunction={() => {
+            handleDelete(goalObj.id);
+          }}
+          componentStyle={styles.deleteContainer}
+          pressedStyle={styles.pressedStyle}
+        >
+          {/* <Text style={styles.deleteButton}>X</Text> */}
+          <AntDesign name="delete" size={24} color="white" />
+        </PressableButton>
+        {/* <Button
+          title="X"
+          onPress={() => {
+            handleDelete(goalObj.id);
+          }}
+          color="grey"
+        /> */}
+        {/* <Button
+        title="i"
+        onPress={() => {
+          // handlePress(goalObj);
+          navigation.navigate("Details", { goalObj });
+        }}
+        color="grey"
+      /> */}
       </Pressable>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: "#aaa",
+  text: {
+    color: "purple",
+    fontSize: 35,
+    padding: 5,
+  },
+  textContainer: {
     borderRadius: 5,
     marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
   },
-  text: {
-    color: "purple",
-    //marginVertical: 5,
-    fontSize: 20,
-    padding: 5,
-  },
   horizontalContainer: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  pressedView: {
-    backgroundColor: "grey",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 5,
-    opacity: 0.7,
-  },
-  deleteButton: {
-    color: "white",
-  },
-  deleteBackground: {
     backgroundColor: "#aaa",
   },
-
+  pressedStyle: {
+    backgroundColor: "red",
+    opacity: 0.5,
+  },
+  deleteButton: {
+    fontSize: 20,
+    color: "white",
+  },
+  deleteContainer: {
+    backgroundColor: "grey",
+  },
 });
