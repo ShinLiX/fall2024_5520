@@ -6,10 +6,11 @@ import { addWarningToDB } from "../Firebase/firestoreHelper";
 
 export default function GoalDetails({ navigation, route }) {
   const [warning, setWarning] = useState(false);
+  const collectionName = "goals";
   function warningHandler() {
     if (!warning) {
-      const { id } = route.params.goalObj; // assuming id is stored in goalObj
-      addWarningToGoal(id, 'goals'); // Assuming 'goals' is your collection name
+      const { id } = route.params.goalObj; 
+      addWarningToDB(id,collectionName); // 
       setWarning(true);
       navigation.setOptions({ title: "Warning!" });
     }

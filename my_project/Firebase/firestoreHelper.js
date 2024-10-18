@@ -1,6 +1,6 @@
 import { collection, addDoc, query } from "firebase/firestore"; 
 import { database } from "./firebaseSetup";
-import { getDocs, deleteDoc, doc } from "firebase/firestore";
+import { getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 
 export async function writeToDB(data, collectionName) {
@@ -36,6 +36,8 @@ export async function deleteAllFromDB(collectionName) {
 	}
 }
 export async function addWarningToDB(goalId, collectionName) {
+	//we are using the updateDoc method because we are adding a new fild to an existing document, instead of 
+	//creating a new document. If the document does not exists, it will throw an error instead of creating a new document.
 	try {
 	  const goalRef = doc(database, collectionName, goalId);
 	  await updateDoc(goalRef, {
