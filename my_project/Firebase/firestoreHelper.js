@@ -35,3 +35,14 @@ export async function deleteAllFromDB(collectionName) {
 	  console.log(err)
 	}
 }
+export async function addWarningToDB(goalId, collectionName) {
+	try {
+	  const goalRef = doc(database, collectionName, goalId);
+	  await updateDoc(goalRef, {
+		warning: true
+	  });
+	  console.log("Warning added to goal");
+	} catch (err) {
+	  console.error("Error adding warning to goal: ", err);
+	}
+  }
