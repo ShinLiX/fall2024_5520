@@ -27,21 +27,21 @@ export default function Home({ navigation }) {
   const appName = "My app";
   const collectionName = "goals";
   useEffect(() => {
-    // Get the reference to the collection
-    const collectionRef = collection(database, collectionName);
-  
-    // Attach the onSnapshot listener
-    const unsubscribe = onSnapshot(collectionRef, (querySnapshot) => {
-      let newArray = [];
-      querySnapshot.forEach((docSnapshot) => {
-        newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
-      });
-      setGoals(newArray);
+  // Get the reference to the collection
+  const collectionRef = collection(database, collectionName);
+
+  // Attach the onSnapshot listener
+  const unsubscribe = onSnapshot(collectionRef, (querySnapshot) => {
+    let newArray = [];
+    querySnapshot.forEach((docSnapshot) => {
+      newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
     });
-  
-    // Return a cleanup function that calls the unsubscribe function
-    return () => unsubscribe();
-  }, []);
+    setGoals(newArray);
+  });
+
+  // Return a cleanup function that calls the unsubscribe function
+  return () => unsubscribe();
+}, []);
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
