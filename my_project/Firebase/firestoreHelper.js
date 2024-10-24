@@ -35,3 +35,18 @@ export async function deleteAllFromDB(collectionName) {
 	  console.log(err)
 	}
 }
+
+export async function readAllDocs(collectionName){
+	try {
+	  const querySnapshot = await getDocs(collection(database, collectionName));
+	  let data = [];
+	  querySnapshot.forEach((docSnapshot) => {
+	    data.push(...docSnapshot.data());
+	  });
+	  return data;
+	}
+	catch (err) {
+	  console.log(err)
+	}
+
+}
