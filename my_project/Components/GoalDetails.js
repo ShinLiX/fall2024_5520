@@ -1,7 +1,8 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import PressableButton from "./PressableButton";
+import GoalUsers from "./GoalUsers";
 export default function GoalDetails({ navigation, route }) {
   const [warning, setWarning] = useState(false);
   function warningHandler() {
@@ -23,6 +24,12 @@ export default function GoalDetails({ navigation, route }) {
       },
     });
   }, []);
+
+  const Item = ({name}) => (
+    <View style={styles.item}>
+      <Text style={styles.name}>{name}</Text>
+    </View>
+  );
   return (
     <View>
       {route.params ? (
@@ -39,6 +46,7 @@ export default function GoalDetails({ navigation, route }) {
           navigation.push("Details");
         }}
       />
+      <GoalUsers />
     </View>
   );
 }
