@@ -25,11 +25,6 @@ export default function GoalDetails({ navigation, route }) {
     });
   }, []);
 
-  const Item = ({name}) => (
-    <View style={styles.item}>
-      <Text style={styles.name}>{name}</Text>
-    </View>
-  );
   return (
     <View>
       {route.params ? (
@@ -46,7 +41,7 @@ export default function GoalDetails({ navigation, route }) {
           navigation.push("Details");
         }}
       />
-      <GoalUsers />
+      <GoalUsers id={route.params.goalObj.id}/>
     </View>
   );
 }
