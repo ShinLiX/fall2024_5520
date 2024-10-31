@@ -41,7 +41,7 @@ export default function LoginComponent({ navigation }) {
           onChangeText={passwordHandler}
           value={password}
           placeholder="Password"
-          secureTextEntry={true}
+          //secureTextEntry={true}
         />
         <Button title="Login" onPress={signin} />
         <Button title="New User? Create an account" 
