@@ -11,8 +11,18 @@ import { auth } from "./Firebase/firebaseSetup";
 import Profile from "./Components/Profile";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import PressableButton from "./Components/PressableButton";
+import { signOut } from "firebase/auth";
+
 
 const Stack = createNativeStackNavigator();
+async function logoutHandler() {
+  try {
+    await signOut(auth);
+    console.log("logged out");
+  } catch (error) {
+    console.log('logout!!!!', error);
+  }
+}
 
 const AuthStack = (
   <>
@@ -56,7 +66,16 @@ const AppStack = (
             component={Profile}
             options={{
               title: "My Profile",
+              headerRight: () => {
+                return (
+                  <PressableButton pressedFunction={logoutHandler}
+                  componentStyle={{backgroundColor:"purple"}}>
+                    <AntDesign name="logout" size={24} color="black" />
+                  </PressableButton>
+                )
+            }
             }}
+          
           />
           <Stack.Screen
             name="Details"
@@ -89,7 +108,9 @@ export default function App() {
       } else {
         setIsUserLoggedIn(false);
       }
+      
     });
+    //return () => unsubscribe();
   }, []);
   return (
     <NavigationContainer>
