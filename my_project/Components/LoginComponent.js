@@ -15,6 +15,10 @@ export default function LoginComponent({ navigation }) {
 
     async function signin() {
         try {
+          if(email.length === 0 || password.length === 0) {
+            Alert.alert("No field should be empty");
+            return;
+          }
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log(user);
