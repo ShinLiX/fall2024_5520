@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GoalDetails from "./Components/GoalDetails";
 import { Button } from "react-native";
+import LoginComponent from "./Components/LoginComponent";
+import SignupComponent from "./Components/SignupComponent";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -15,6 +17,20 @@ export default function App() {
           headerTintColor: "white",
         }}
       >
+        <Stack.Screen
+          name="Login"
+          component={LoginComponent}
+          options={({ navigation }) => {
+            title: "Login"
+          }}
+        />
+        <Stack.Screen
+          name="Signup"
+          component={SignupComponent}
+          options={({ navigation }) => {
+            title: "Signup"
+          }}
+        />
         <Stack.Screen
           name="Home"
           component={Home}
@@ -41,6 +57,7 @@ export default function App() {
             };
           }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
