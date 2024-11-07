@@ -44,16 +44,19 @@ export default function Home({ navigation }) {
 }
 )}, []);
   //update this fn to receive data
-  function handleInputData(data) {
+  async function handleInputData(data) {
+    try {
     //log the data to console
     //console.log("App ", data);
     // declare a JS object
     console.log("received data", data);
-    let {text: newGoal, image: newImage} = data;
-    console.log(newGoal);
-    console.log(newImage);
-    const goalData = {text: newGoal}
-    const goalDataWithOwner = {...goalData, owner: auth.currentUser.uid};
+    // let {text: newGoal, image: newImage} = data;
+    // const goalData = {text: newGoal}
+    if (data.hasOwnProperty("image")) {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+    }
+    const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
     writeToDB(goalDataWithOwner, collectionName);
     //console.log(goals);
     // update the goals array to have newGoal as an item
@@ -63,6 +66,11 @@ export default function Home({ navigation }) {
     // });
     //updated goals is not accessible here
     setIsModalVisible(false);
+  
+    } catch (error) {
+      console.log("handleInputData", error);
+      Alert.alert("An error occured", "Please try again later");
+    }
   }
   function dismissModal() {
     setIsModalVisible(false);

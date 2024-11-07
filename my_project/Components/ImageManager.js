@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import { View, Button, Image } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
-import { useCameraPermissions } from 'expo-image-picker';
 
 
 export default function ImageManager({ imageHandler }) {
@@ -9,7 +8,7 @@ export default function ImageManager({ imageHandler }) {
     const [response, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageURI, setImageURI] = useState(null);
 
-    const verifyPermissions = async () => {
+    async function verifyPermissions() {
       try {
         if (response !== 'granted') {
             const granted = await requestPermission();
@@ -21,16 +20,14 @@ export default function ImageManager({ imageHandler }) {
       }
     };
 
-    const takeImageHandler = async () => {
+    async function takeImageHandler() {
       try {
         const hasPermission = await verifyPermissions();
-        if (hasPermission) {
-            const result = await ImagePicker.launchCameraAsync({
-                // mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                // allowsEditing: true,
-                // aspect: [4, 3],
-                // quality: 1,
-            })
+        if (!hasPermission) {
+            Alert.alert("Permission required", "You need to grant camera permission to use this feature", [{text: "ok"}]);
+        } else {
+         
+            const result = await ImagePicker.launchCameraAsync()
             console.log(result);
             if (!result.cancelled) {
                 setImage(result.assets[0].uri);
@@ -68,7 +65,7 @@ export default function ImageManager({ imageHandler }) {
     <View>
         {image && <Image source={{uri: image}} style={{width: 200, height: 200}} />}
         <Button 
-        title="Select Photo"
+        title="Take a photo"
         onPress={takeImageHandler}
         ></Button>
     </View>
