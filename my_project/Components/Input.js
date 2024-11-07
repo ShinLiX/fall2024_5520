@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
+import ImageManager from "./ImageManager";
 
 export default function Input({
   textInputFocus,
@@ -19,6 +20,11 @@ export default function Input({
   const [text, setText] = useState("");
   const [blur, setBlur] = useState(false);
   const minimumChar = 3;
+  const [image, setImage] = useState(null);
+
+  function handleImage(image) {
+    setImage(image);
+  }
 
   function updateText(changedText) {
     setText(changedText);
@@ -26,8 +32,11 @@ export default function Input({
   function handleConfirm() {
     // call the callback fn received from App.js
     // pass what user has typed
-    inputHandler(text);
+    const data = { text: text, image: image };
+    console.log(data);
+    inputHandler(data);
     setText("");
+
   }
   function handleCancel() {
     // hide the modal
@@ -82,6 +91,7 @@ export default function Input({
           ) : (
             text && <Text>{text.length}</Text>
           )}
+          <ImageManager imageHandler={handleImage}/>
           <View style={styles.buttonsRow}>
             <View style={styles.buttonContainer}>
               <Button title="Cancel" onPress={handleCancel} />

@@ -13,9 +13,9 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "../Firebase/firebaseSetup";
+import { auth, database } from "../Firebase/firebaseSetup";
 import { deleteAllFromDB, writeToDB } from "../Firebase/firestoreHelper";
-import { query } from "firebase/firestore";
+import { query, where } from "firebase/firestore";
 import { collection, onSnapshot } from "firebase/firestore";
 import { deleteFromDB } from "../Firebase/firestoreHelper";
 
@@ -26,7 +26,9 @@ export default function Home({ navigation }) {
   const appName = "My app";
   const collectionName = "goals";
   //querySnapshot is a list of ducumentSnapshots
-  useEffect(() => {onSnapshot(collection(database, collectionName), (querySnapshot) => {
+  useEffect(() => {onSnapshot(
+    query(collection(database, collectionName),where("owner", "==", auth.currentUser.uid))
+    , (querySnapshot) => {
     let goalsArray = [];
     querySnapshot.forEach((docSnapshot) => {
       //populate the array
@@ -34,17 +36,25 @@ export default function Home({ navigation }) {
       console.log(docSnapshot);
   });
   //setGoals(goalsArray);
-  console.log(goalsArray);
   setGoals(goalsArray);
-});
-}, []);
+}, 
+(error)=> {
+  console.log("on snapshot ", error);
+  Alert.alert("An error occured", "Please try again later");
+}
+)}, []);
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     //console.log("App ", data);
     // declare a JS object
-    let newGoal = { text: data };
-    writeToDB(newGoal, collectionName);
+    console.log("received data", data);
+    let {text: newGoal, image: newImage} = data;
+    console.log(newGoal);
+    console.log(newImage);
+    const goalData = {text: newGoal}
+    const goalDataWithOwner = {...goalData, owner: auth.currentUser.uid};
+    writeToDB(goalDataWithOwner, collectionName);
     //console.log(goals);
     // update the goals array to have newGoal as an item
     //async
