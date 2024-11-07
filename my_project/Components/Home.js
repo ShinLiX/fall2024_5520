@@ -18,6 +18,9 @@ import { deleteAllFromDB, writeToDB } from "../Firebase/firestoreHelper";
 import { query, where } from "firebase/firestore";
 import { collection, onSnapshot } from "firebase/firestore";
 import { deleteFromDB } from "../Firebase/firestoreHelper";
+import { ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "../Firebase/firebaseSetup";
+
 
 
 export default function Home({ navigation }) {
@@ -43,9 +46,25 @@ export default function Home({ navigation }) {
   Alert.alert("An error occured", "Please try again later");
 }
 )}, []);
-  //update this fn to receive data
-  async function handleInputData(data) {
+
+
+  async function handleImageData(image) {
     try {
+      const response = await fetch(image);
+        if (response.ok){
+        const blob = await response.blob();
+        const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+        const imageRef = await ref(storage, `images/${imageName}`)
+        const uploadResult = await uploadBytesResumable(imageRef, blob);
+        }
+    } catch (error) {
+      console.log("handleImageData", error);
+      Alert.alert("An error occured", "Please try again later");
+    }
+
+  }
+  //update this fn to receive data
+  function handleInputData(data) {
     //log the data to console
     //console.log("App ", data);
     // declare a JS object
@@ -53,9 +72,8 @@ export default function Home({ navigation }) {
     // let {text: newGoal, image: newImage} = data;
     // const goalData = {text: newGoal}
     //const data = {text: data.text}
-    if (data.hasOwnProperty("image")) {
-      const response = await fetch(data.image);
-      const blob = await response.blob();
+    if (data.image) {
+      handleImageData(data.image);
     }
     const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
     writeToDB(goalDataWithOwner, collectionName);
@@ -67,11 +85,6 @@ export default function Home({ navigation }) {
     // });
     //updated goals is not accessible here
     setIsModalVisible(false);
-  
-    } catch (error) {
-      console.log("handleInputData", error);
-      Alert.alert("An error occured", "Please try again later");
-    }
   }
   function dismissModal() {
     setIsModalVisible(false);
