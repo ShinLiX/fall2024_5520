@@ -52,8 +52,9 @@ export default function Home({ navigation }) {
     console.log("received data", data);
     // let {text: newGoal, image: newImage} = data;
     // const goalData = {text: newGoal}
+    //const data = {text: data.text}
     if (data.hasOwnProperty("image")) {
-      const response = await fetch(uri);
+      const response = await fetch(data.image);
       const blob = await response.blob();
     }
     const goalDataWithOwner = {...data, owner: auth.currentUser.uid};

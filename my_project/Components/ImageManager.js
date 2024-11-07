@@ -4,9 +4,9 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 export default function ImageManager({ imageHandler }) {
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState("");
     const [response, requestPermission] = ImagePicker.useCameraPermissions();
-    const [imageURI, setImageURI] = useState(null);
+    const [imageURI, setImageURI] = useState("");
 
     async function verifyPermissions() {
       try {
@@ -52,7 +52,7 @@ export default function ImageManager({ imageHandler }) {
                 quality: 1,
             });
             console.log(result);
-            if (!result.cancelled) {
+            if (!result.canceled) {
                 setImageURI(result.assets[0].uri);
             }
         }
