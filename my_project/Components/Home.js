@@ -47,56 +47,56 @@ export default function Home({ navigation }) {
 )}, []);
 
 
-  async function handleImageData(image) {
-    try {
-      const response = await fetch(image);
-        if (response.ok){
-        const blob = await response.blob();
-        const imageName = image.substring(image.lastIndexOf('/') + 1);
-        const imageRef = ref(storage, `images/${imageName}`)
-        const uploadResult = await uploadBytesResumable(imageRef, blob);
-        // return uploadResult.metadata.fullPath;
-        console.log("uploadResult", uploadResult);
-      }
-    } catch (error) {
-      console.log("handleImageData", error);
-      Alert.alert("An error occured when handleImageData", error.message);
-      return null;
-    }
+  // async function handleImageData(image) {
+  //   try {
+  //     const response = await fetch(image);
+  //       if (response.ok){
+  //       const blob = await response.blob();
+  //       const imageName = image.substring(image.lastIndexOf('/') + 1);
+  //       const imageRef = ref(storage, `images/${imageName}`)
+  //       const uploadResult = await uploadBytesResumable(imageRef, blob);
+  //       // return uploadResult.metadata.fullPath;
+  //       console.log("uploadResult", uploadResult);
+  //     }
+  //   } catch (error) {
+  //     console.log("handleImageData", error);
+  //     Alert.alert("An error occured when handleImageData", error.message);
+  //     return null;
+  //   }
 
-  }
-  //update this fn to receive data
-  async function handleInputData(data) {
-    //log the data to console
-    //console.log("App ", data);
-    // declare a JS object
-    try {
+  // }
+  // //update this fn to receive data
+  // // async function handleInputData(data) {
+  // //   //log the data to console
+  // //   //console.log("App ", data);
+  // //   // declare a JS object
+  // //   try {
       
-    const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
-    console.log("received data", data);
+  // //   const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
+  // //   console.log("received data", data);
     
-    if (data.image) {
-      const imageUri = await handleImageData(data.image);
-      if (imageUri) {
-        goalDataWithOwner.image = imageUri;
-      }
-    }
+  // //   if (data.image) {
+  // //     const imageUri = await handleImageData(data.image);
+  // //     if (imageUri) {
+  //       goalDataWithOwner.image = imageUri;
+  //     }
+  //   }
     
-    await writeToDB(goalDataWithOwner, collectionName);
-    //console.log(goals);
+  //   await writeToDB(goalDataWithOwner, collectionName);
+  //   //console.log(goals);
     // update the goals array to have newGoal as an item
     //async
     // setGoals((prevGoals) => {
     //   return [...prevGoals, newGoal];
     // });
     //updated goals is not accessible here
-    setIsModalVisible(false);
-  }
-  catch (error) {
-    console.log("handleInputData", error);
-    Alert.alert("An error occured : ", error.message);
-  }
-}
+//     setIsModalVisible(false);
+//   }
+//   catch (error) {
+//     console.log("handleInputData", error);
+//     Alert.alert("An error occured : ", error.message);
+//   }
+// }
   function dismissModal() {
     setIsModalVisible(false);
   }
@@ -152,12 +152,12 @@ export default function Home({ navigation }) {
           }}
         /> */}
       </View>
-      <Input
+      {/* <Input
         textInputFocus={true}
         inputHandler={handleInputData}
         modalVisible={isModalVisible}
         dismissModal={dismissModal}
-      />
+      /> */}
       <View style={styles.bottomView}>
         <FlatList
           ListEmptyComponent={
