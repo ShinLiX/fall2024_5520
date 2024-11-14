@@ -22,7 +22,6 @@ import { ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../Firebase/firebaseSetup";
 
 
-
 export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -43,7 +42,7 @@ export default function Home({ navigation }) {
 }, 
 (error)=> {
   console.log("on snapshot ", error);
-  Alert.alert("An error occured", "Please try again later");
+  Alert.alert("An error occured", error.message);
 }
 )}, []);
 
@@ -53,30 +52,37 @@ export default function Home({ navigation }) {
       const response = await fetch(image);
         if (response.ok){
         const blob = await response.blob();
-        const imageName = uri.substring(uri.lastIndexOf('/') + 1);
-        const imageRef = await ref(storage, `images/${imageName}`)
+        const imageName = image.substring(image.lastIndexOf('/') + 1);
+        const imageRef = ref(storage, `images/${imageName}`)
         const uploadResult = await uploadBytesResumable(imageRef, blob);
-        }
+        // return uploadResult.metadata.fullPath;
+        console.log("uploadResult", uploadResult);
+      }
     } catch (error) {
       console.log("handleImageData", error);
-      Alert.alert("An error occured", "Please try again later");
+      Alert.alert("An error occured when handleImageData", error.message);
+      return null;
     }
 
   }
   //update this fn to receive data
-  function handleInputData(data) {
+  async function handleInputData(data) {
     //log the data to console
     //console.log("App ", data);
     // declare a JS object
-    console.log("received data", data);
-    // let {text: newGoal, image: newImage} = data;
-    // const goalData = {text: newGoal}
-    //const data = {text: data.text}
-    if (data.image) {
-      handleImageData(data.image);
-    }
+    try {
+      
     const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
-    writeToDB(goalDataWithOwner, collectionName);
+    console.log("received data", data);
+    
+    if (data.image) {
+      const imageUri = await handleImageData(data.image);
+      if (imageUri) {
+        goalDataWithOwner.image = imageUri;
+      }
+    }
+    
+    await writeToDB(goalDataWithOwner, collectionName);
     //console.log(goals);
     // update the goals array to have newGoal as an item
     //async
@@ -86,6 +92,11 @@ export default function Home({ navigation }) {
     //updated goals is not accessible here
     setIsModalVisible(false);
   }
+  catch (error) {
+    console.log("handleInputData", error);
+    Alert.alert("An error occured : ", error.message);
+  }
+}
   function dismissModal() {
     setIsModalVisible(false);
   }

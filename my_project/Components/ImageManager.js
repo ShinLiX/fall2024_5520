@@ -28,10 +28,12 @@ export default function ImageManager({ imageHandler }) {
         } else {
          
             const result = await ImagePicker.launchCameraAsync()
-            console.log(result);
-            if (!result.cancelled) {
-                setImage(result.assets[0].uri);
-                imageHandler(result.assets[0].uri);
+            //console.log(result);
+            if (!result.canceled) {
+                // setImage(result.assets[0].uri);
+                // imageHandler(result.assets[0].uri);
+                setImage(result.uri);
+                imageHandler(result.uri);
             }
         } 
     }
@@ -49,11 +51,12 @@ export default function ImageManager({ imageHandler }) {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [4, 3],
-                quality: 1,
+                quality: 0.1,
             });
-            console.log(result);
+            //console.log(result);
             if (!result.canceled) {
-                setImageURI(result.assets[0].uri);
+                setImageURI(result.uri);
+                imageHandler(result.uri);
             }
         }
     } catch (err) {
