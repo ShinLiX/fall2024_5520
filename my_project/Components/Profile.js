@@ -1,23 +1,17 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-import { auth } from '../Firebase/firebaseSetup';
-import LocationManager from './LocationManager';
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { auth } from "../Firebase/firebaseSetup";
+import LocationManager from "./LocationManager";
 
 export default function Profile() {
-    const user = auth.currentUser;
-    if (user) {
-        return (
-            <View>
-                <Text>{user.email}</Text>
-                <Text>{user.uid}</Text>
-                <LocationManager />
-            </View>
-        )
-    } else {
-        return (
-            <View>
-                <Text>Not logged in</Text>
-            </View>
-        )
-    }
+  // read auth.currentUser
+  return (
+    <View>
+      <Text>{auth.currentUser.email}</Text>
+      <Text>{auth.currentUser.uid}</Text>
+      <LocationManager />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({});

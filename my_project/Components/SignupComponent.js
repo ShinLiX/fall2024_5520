@@ -1,93 +1,102 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'
-import { auth } from '../Firebase/firebaseSetup';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { auth } from "../Firebase/firebaseSetup";
 
 export default function SignupComponent({ navigation }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const emailHandler = (email) => {
-        setEmail(email);
-    };
-    const passwordHandler = (password) => {
-        setPassword(password);
-    };
-    const confirmPasswordHandler = (confirmPassword) => {
-        setConfirmPassword(confirmPassword);
-    }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    async function register() {
-        try {
-          if (password !== confirmPassword) {
-            Alert.alert("Passwords do not match");
-            return;
-          }
-          if (
-            email.length === 0 ||
-            password.length === 0 ||
-            confirmPassword.length === 0
-          ) {
-            Alert.alert("No field should be empty");
-            return;
-          }
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log(user);
-        } catch (error) {
-          if (error.code === "auth/weak-password") {
-            Alert.alert("password is too weak");
-            return;
-          }
-            console.log('Signup', error.code);
-            Alert.alert(error.message);
-        }
+  const loginHandler = () => {
+    // go to login
+    navigation.replace("LoginComponent");
+  };
+  const signupHandler = async () => {
+    try {
+      // do some data validation
+      // no field should be empty
+      // valid email address @ .
+      // password and confirm password match
+      if (password !== confirmPassword) {
+        Alert.alert("Password and confirm password should match");
+        return;
+      }
+      if (
+        email.length === 0 ||
+        password.length === 0 ||
+        confirmPassword.length === 0
+      ) {
+        Alert.alert("No field should be empty");
+        return;
+      }
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log(userCred);
+    } catch (err) {
+      console.log("Sign up ", err.code);
+      // tell user if an error happens
+      if (err.code === "auth/weak-password") {
+        Alert.alert("Your password should be at least    6 characters");
+      }
+      Alert.alert(err.message);
     }
-
+  };
   return (
     <View style={styles.container}>
-        <Text>Email Address</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={emailHandler}
-          value={email}
-          placeholder="Email Address"
-        />
-        <Text>Password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={passwordHandler}
-          value={password}
-          placeholder="Password"
-          //secureTextEntry={true}
-        />
-        <Text>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={confirmPasswordHandler}
-          value={confirmPassword}
-          placeholder="Password"
-          //secureTextEntry={true}
-        />
-        <Button title="Register" onPress={register} />
-        <Button title="Already registered? Login" 
-            onPress={()=>navigation.replace('Login')} />
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={(changedText) => {
+          setEmail(changedText);
+        }}
+      />
+      <Text style={styles.label}>Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        placeholder="Password"
+        value={password}
+        onChangeText={(changedText) => {
+          setPassword(changedText);
+        }}
+      />
+      <Text style={styles.label}>Confirm Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={(changedText) => {
+          setConfirmPassword(changedText);
+        }}
+      />
+      <Button title="Register" onPress={signupHandler} />
+      <Button title="Already Registered? Login" onPress={loginHandler} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
+    // alignItems: "stretch",
     justifyContent: "center",
   },
-    input: {
-        borderWidth: 1,
-        borderColor: 'black',
-        padding: 10,
-        margin: 10
-    }
-})
+  input: {
+    borderColor: "#552055",
+    borderWidth: 2,
+    width: "90%",
+    margin: 5,
+    padding: 5,
+  },
+  label: {
+    marginLeft: 10,
+  },
+});

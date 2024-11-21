@@ -1,66 +1,71 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
-import { auth } from '../Firebase/firebaseSetup';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { auth } from "../Firebase/firebaseSetup";
 
 export default function LoginComponent({ navigation }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const emailHandler = (email) => {
-        setEmail(email);
-    };
-    const passwordHandler = (password) => {
-        setPassword(password);
-    };
-
-    async function signin() {
-        try {
-          if(email.length === 0 || password.length === 0) {
-            Alert.alert("No field should be empty");
-            return;
-          }
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log(user);
-        } catch (error) {
-            console.log(error);
-        }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const signupHandler = () => {
+    // go to signup
+    navigation.replace("SignupComponent");
+  };
+  const loginHandler = async () => {
+    // data validation?
+    try {
+      if (email.length === 0 || password.length === 0) {
+        Alert.alert("No field should be empty");
+        return;
+      }
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      console.log(userCred.user);
+    } catch (err) {
+      console.log("login ", err);
     }
+  };
+
   return (
     <View style={styles.container}>
-        <Text>Email Address</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={emailHandler}
-          value={email}
-          placeholder="Email Address"
-        />
-        <Text>Password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={passwordHandler}
-          value={password}
-          placeholder="Password"
-          //secureTextEntry={true}
-        />
-        <Button title="Login" onPress={signin} />
-        <Button title="New User? Create an account" 
-            onPress={()=>navigation.replace('Signup')} />
-
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        placeholder="Email"
+        style={styles.input}
+        value={email}
+        onChangeText={(changedText) => {
+          setEmail(changedText);
+        }}
+      />
+      <Text style={styles.label}>Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        placeholder="Password"
+        value={password}
+        onChangeText={(changedText) => {
+          setPassword(changedText);
+        }}
+      />
+      <Button title="Login" onPress={loginHandler} />
+      <Button title="New User? Create An Account" onPress={signupHandler} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    alignItems: "stretch",
     justifyContent: "center",
   },
-    input: {
-        borderWidth: 1,
-        borderColor: 'black',
-        padding: 10,
-        margin: 10
-    }
-})
+  input: {
+    borderColor: "#552055",
+    borderWidth: 2,
+    width: "90%",
+    margin: 5,
+    padding: 5,
+  },
+  label: {
+    marginLeft: 10,
+  },
+});

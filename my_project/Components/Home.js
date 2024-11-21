@@ -13,90 +13,97 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { auth, database } from "../Firebase/firebaseSetup";
-import { deleteAllFromDB, writeToDB } from "../Firebase/firestoreHelper";
-import { query, where } from "firebase/firestore";
-import { collection, onSnapshot } from "firebase/firestore";
-import { deleteFromDB } from "../Firebase/firestoreHelper";
+import { auth, database, storage } from "../Firebase/firebaseSetup";
+import {
+  deleteAllFromDB,
+  deleteFromDB,
+  writeToDB,
+} from "../Firebase/firestoreHelper";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../Firebase/firebaseSetup";
-
 
 export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
   const appName = "My app";
   const collectionName = "goals";
-  //querySnapshot is a list of ducumentSnapshots
-  useEffect(() => {onSnapshot(
-    query(collection(database, collectionName),where("owner", "==", auth.currentUser.uid))
-    , (querySnapshot) => {
-    let goalsArray = [];
-    querySnapshot.forEach((docSnapshot) => {
-      //populate the array
-      goalsArray.push({...docSnapshot.data(), id: docSnapshot.id});
-      console.log(docSnapshot);
-  });
-  //setGoals(goalsArray);
-  setGoals(goalsArray);
-}, 
-(error)=> {
-  console.log("on snapshot ", error);
-  Alert.alert("An error occured", error.message);
-}
-)}, []);
+  useEffect(() => {
+    //querySnapshot is a list/array of documentSnapshots
+    const unsubscribe = onSnapshot(
+      query(
+        collection(database, collectionName),
+        where("owner", "==", auth.currentUser.uid)
+      ),
+      (querySnapshot) => {
+        //define an array
+        let newArray = [];
+        querySnapshot.forEach((docSnapshot) => {
+          //populate the array
+          newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
+          console.log(docSnapshot.id);
+        });
+        console.log(newArray);
+        //setGoals with this array
+        setGoals(newArray);
+      },
+      (error) => {
+        console.log("on snapshot ", error);
+        Alert.alert(error.message);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+  async function handleImageData(uri) {
+    try {
+      let uploadURl = "";
+      //fetch the image data
+      const response = await fetch(uri);
+      if (!response.ok) {
+        throw new Error(`fetch error happened with status ${response.status}`);
+      }
+      const blob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, blob);
+      uploadURl = uploadResult.metadata.fullPath;
+      return uploadURl;
+    } catch (err) {
+      console.log("handle Image data ", err);
+    }
+  }
+  //update this fn to receive data
+  //data is an object with text and imageUri properties
+  async function handleInputData(data) {
+    try {
+      //log the data to console
+      console.log("App ", data);
+      let imageUri = "";
+      if (data.imageUri) {
+        imageUri = await handleImageData(data.imageUri);
+      }
+      // declare a JS object
+      let newGoal = { text: data.text };
+      newGoal = { ...newGoal, owner: auth.currentUser.uid };
+      if (imageUri) {
+        newGoal = { ...newGoal, imageUri: imageUri };
+      }
+      console.log(newGoal);
+      // add the newGoal to db
+      //call writeToDB
+      writeToDB(newGoal, collectionName);
 
+      // update the goals array to have newGoal as an item
+      //async
 
-  // async function handleImageData(image) {
-  //   try {
-  //     const response = await fetch(image);
-  //       if (response.ok){
-  //       const blob = await response.blob();
-  //       const imageName = image.substring(image.lastIndexOf('/') + 1);
-  //       const imageRef = ref(storage, `images/${imageName}`)
-  //       const uploadResult = await uploadBytesResumable(imageRef, blob);
-  //       // return uploadResult.metadata.fullPath;
-  //       console.log("uploadResult", uploadResult);
-  //     }
-  //   } catch (error) {
-  //     console.log("handleImageData", error);
-  //     Alert.alert("An error occured when handleImageData", error.message);
-  //     return null;
-  //   }
-
-  // }
-  // //update this fn to receive data
-  // // async function handleInputData(data) {
-  // //   //log the data to console
-  // //   //console.log("App ", data);
-  // //   // declare a JS object
-  // //   try {
-      
-  // //   const goalDataWithOwner = {...data, owner: auth.currentUser.uid};
-  // //   console.log("received data", data);
-    
-  // //   if (data.image) {
-  // //     const imageUri = await handleImageData(data.image);
-  // //     if (imageUri) {
-  //       goalDataWithOwner.image = imageUri;
-  //     }
-  //   }
-    
-  //   await writeToDB(goalDataWithOwner, collectionName);
-  //   //console.log(goals);
-    // update the goals array to have newGoal as an item
-    //async
-    // setGoals((prevGoals) => {
-    //   return [...prevGoals, newGoal];
-    // });
-    //updated goals is not accessible here
-//     setIsModalVisible(false);
-//   }
-//   catch (error) {
-//     console.log("handleInputData", error);
-//     Alert.alert("An error occured : ", error.message);
-//   }
-// }
+      // setGoals((prevGoals) => {
+      //   return [...prevGoals, newGoal];
+      // });
+      //updated goals is not accessible here
+      setIsModalVisible(false);
+    } catch (err) {
+      console.log("handle input data ", err);
+    }
+  }
   function dismissModal() {
     setIsModalVisible(false);
   }
@@ -107,24 +114,21 @@ export default function Home({ navigation }) {
   //   navigation.navigate("Details", { goalObj: pressedGoal });
   // }
   function goalDeleteHandler(deletedId) {
-    //console.log("goal deleted ", deletedId);
+    console.log("goal deleted ", deletedId);
     //Use array.filter to update the array by removing the deletedId
-
-    deleteFromDB(collectionName);
-
-    setGoals((prevGoals) => {
-      return prevGoals.filter((goal) => {
-        return goal.id != deletedId;
-      });
-    });
+    deleteFromDB(deletedId, collectionName);
+    // setGoals((prevGoals) => {
+    //   return prevGoals.filter((goal) => {
+    //     return goal.id != deletedId;
+    //   });
+    // });
   }
   function deleteAll() {
-    
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
       {
         text: "Yes",
-      
         onPress: () => {
+          // setGoals([]);
           deleteAllFromDB(collectionName);
         },
       },
@@ -152,12 +156,12 @@ export default function Home({ navigation }) {
           }}
         /> */}
       </View>
-      {/* <Input
+      <Input
         textInputFocus={true}
         inputHandler={handleInputData}
         modalVisible={isModalVisible}
         dismissModal={dismissModal}
-      /> */}
+      />
       <View style={styles.bottomView}>
         <FlatList
           ListEmptyComponent={
@@ -169,28 +173,28 @@ export default function Home({ navigation }) {
           ListFooterComponent={
             goals.length && <Button title="Delete all" onPress={deleteAll} />
           }
-          ItemSeparatorComponent={({highlighted})=> (
-            
-            <View
-              style={[
-                highlighted? styles.highlightedSeperator : styles.seperator,
-              ]}
-            />)
-          }
-          
+          ItemSeparatorComponent={({ highlighted }) => {
+            return (
+              <View
+                style={{
+                  height: 5,
+                  backgroundColor: highlighted ? "purple" : "gray",
+                }}
+              />
+            );
+          }}
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
           renderItem={({ item, separators }) => {
             return (
               <GoalItem
+                separators={separators}
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
-                onPressIn={() => separators.highlight()}
-                onPressOut={() => separators.unhighlight()}
-                />
-            )}}
                 // handlePress={goalPressHandler}
-            
+              />
+            );
+          }}
         />
         {/* <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {goals.map((goalObj) => {
@@ -229,13 +233,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     padding: 5,
-  },
-  seperator: {
-    height: 3,
-    backgroundColor: "gray",
-  },
-  highlightedSeperator: {
-    height: 3,
-    backgroundColor: "purple",
   },
 });

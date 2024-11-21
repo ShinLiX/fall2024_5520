@@ -19,24 +19,21 @@ export default function Input({
 }) {
   const [text, setText] = useState("");
   const [blur, setBlur] = useState(false);
+  const [imageUri, setImageUri] = useState("");
   const minimumChar = 3;
-  const [image, setImage] = useState(null);
-
-  function handleImage(image) {
-    setImage(image);
-  }
 
   function updateText(changedText) {
     setText(changedText);
   }
+  function receiveImageUri(uri) {
+    setImageUri(uri);
+  }
   function handleConfirm() {
     // call the callback fn received from App.js
     // pass what user has typed
-    const data = { text: text, image: image };
-    console.log(data);
-    inputHandler(data);
+    //also send back the imageUri
+    inputHandler({ text, imageUri });
     setText("");
-
   }
   function handleCancel() {
     // hide the modal
@@ -91,7 +88,7 @@ export default function Input({
           ) : (
             text && <Text>{text.length}</Text>
           )}
-          <ImageManager imageHandler={handleImage}/>
+          <ImageManager receiveImageUri={receiveImageUri} />
           <View style={styles.buttonsRow}>
             <View style={styles.buttonContainer}>
               <Button title="Cancel" onPress={handleCancel} />
