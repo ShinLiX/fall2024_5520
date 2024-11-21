@@ -11,6 +11,9 @@ import React, { useEffect, useState } from "react";
 // import { getCurrentPositionAsync } from "expo-location";
 import * as Location from "expo-location";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { readDoc, updateDB } from "../Firebase/firestoreHelper";
+import { auth } from "../Firebase/firebaseSetup";
+
 const windowWidth = Dimensions.get("window").width;
 
 export default function LocationManager() {
@@ -22,6 +25,20 @@ export default function LocationManager() {
     console.log("Route params: ", route.params);
     setLocation(route.params?.selectedLocation);
   }, [route]);
+  useEffect(() => {
+    async function getUserData() {
+      try {
+          const userData = readDoc(auth.currentUser.uid, "users");
+          if (userData && userData.location) {
+            setLocation(userData.location);
+          }
+      } catch (err) {
+        console.log("get user data ", err);
+      }
+    }
+    getUserData();
+  }
+  , []);
 
   async function verifyPermission() {
     //check if user has granted permission return true
@@ -65,6 +82,15 @@ export default function LocationManager() {
     }
   }
 
+  function saveLocationHandler() {
+    try {updateDB(auth.currentUser.uid, { location }, "users");
+    navigation.navigate("Home");
+  } catch (err) {
+    console.log("save location ", err);
+  }
+    
+  }
+
   return (
     <View>
       <Button title="Locate Me" onPress={locateUserHandler} />
@@ -81,6 +107,7 @@ export default function LocationManager() {
           alt="static map"
         />
       )}
+      <Button disabled={!location} title="Save Location" onPress={saveLocationHandler} />
     </View>
   );
 }
